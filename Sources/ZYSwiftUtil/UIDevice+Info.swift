@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UIDevice {
+public extension UIDevice {
     func MBFormatter(_ bytes: Int64) -> String {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = ByteCountFormatter.Units.useMB
@@ -105,7 +105,7 @@ extension UIDevice {
     }
 }
 
-extension UIDevice {
+public extension UIDevice {
     func ramUsage() -> (UInt64, Int64, Int64, Float) {
         let v = ProcessInfo.processInfo.physicalMemory
         print("\(v)")

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UIImage {
+public extension UIImage {
     /// 根据文字生成包含第一个文字的图片
     /// - Parameters:
     ///   - text: 文字

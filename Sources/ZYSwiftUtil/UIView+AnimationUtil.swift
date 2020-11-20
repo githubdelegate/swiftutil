@@ -15,7 +15,7 @@ public enum ShakeDirection: Int {
     case vertical // 垂直抖动
 }
 
-extension UIView {
+public extension UIView {
     /**
      扩展UIView增加抖动方法
 

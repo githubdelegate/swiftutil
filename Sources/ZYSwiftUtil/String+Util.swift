@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension NSAttributedString {
+public extension NSAttributedString {
     /// 获取string文字size
     /// - Returns: description
     func getSize() -> CGSize {

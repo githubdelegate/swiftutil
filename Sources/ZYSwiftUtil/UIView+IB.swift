@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UIButton {
+public extension UIButton {
     private struct AssociatedKey {
         static var animationUserInteractKey = "animationUserInteractKey"
     }
@@ -38,7 +38,7 @@ extension UIButton {
 
 
 // 方便 在 xib 里面直接 设置各种属性
-extension UIView {
+public extension UIView {
     @IBInspectable var cornerRadius: CGFloat {
         get {
             return layer.cornerRadius
@@ -131,19 +131,19 @@ extension UIView {
 }
 
 // 自定义view，用@IBDesignable修饰
-@IBDesignable class GrammView: UIView {
+@IBDesignable public class GrammView: UIView {
 }
-@IBDesignable class GrammBtn: UIButton {
+@IBDesignable public class GrammBtn: UIButton {
 }
-@IBDesignable class GrammLabel: UILabel {
+@IBDesignable public class GrammLabel: UILabel {
 }
-@IBDesignable class GrammImageView: UIImageView {
+@IBDesignable public class GrammImageView: UIImageView {
 }
 
 
 /// 顶部对其label
-class VerticalTopAlignLabel: UILabel {
-    override func drawText(in rect:CGRect) {
+public class VerticalTopAlignLabel: UILabel {
+    public override func drawText(in rect:CGRect) {
         guard let labelText = text else {  return super.drawText(in: rect) }
 
         let attributedText = NSAttributedString(string: labelText, attributes: [NSAttributedString.Key.font: font!])

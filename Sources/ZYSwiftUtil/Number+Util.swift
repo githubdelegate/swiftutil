@@ -9,7 +9,7 @@
 import Foundation
 
 
-extension Float {
+public extension Float {
     
     /// 保留小数点后两位输出string
     /// - Returns: description

@@ -11,7 +11,7 @@ import UIKit
 import SwiftUI
 
 @available(iOS 13.0, *)
-extension Color {
+public extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
@@ -64,7 +64,7 @@ extension Color {
 }
 
 
-extension UIColor {
+public extension UIColor {
     convenience init(hexString: String, alpha: CGFloat = 1.0) {
         let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let scanner = Scanner(string: hexString)

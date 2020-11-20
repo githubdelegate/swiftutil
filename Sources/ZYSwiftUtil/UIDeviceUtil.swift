@@ -9,11 +9,11 @@
 import Foundation
 import UIKit
 
-enum LocalLanguage {
+public enum LocalLanguage {
     case en,cn
 }
 
-extension UIDevice {
+public extension UIDevice {
     /// 判断当前设备的语言， 只支持 中文和英文
     /// - Returns: description
     func getLanguageType() -> LocalLanguage {

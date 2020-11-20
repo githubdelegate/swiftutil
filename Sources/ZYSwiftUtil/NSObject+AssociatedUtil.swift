@@ -9,7 +9,7 @@
 import Foundation
 import ObjectiveC
     
-extension NSObject {
+public extension NSObject {
     func setAssociated<T>(value: T, associatedKey: UnsafeRawPointer, policy: objc_AssociationPolicy = objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) -> Void {
         objc_setAssociatedObject(self, associatedKey, value, policy)
     }
@@ -20,7 +20,7 @@ extension NSObject {
     }
 }
 
-extension NSObject{
+public extension NSObject{
     class var nameOfClass: String?{
         if let n = NSStringFromClass(self).components(separatedBy: ".").last {
             return n
