@@ -105,88 +105,88 @@ public extension UIDevice {
     }
 }
 
-public extension UIDevice {
-    func ramUsage() -> (UInt64, Int64, Int64, Float) {
-        let v = ProcessInfo.processInfo.physicalMemory
-        print("\(v)")
-
-        var pagesize: vm_size_t = 0
-
-        let host_port: mach_port_t = mach_host_self()
-        var host_size: mach_msg_type_number_t = mach_msg_type_number_t(MemoryLayout<vm_statistics_data_t>.stride / MemoryLayout<integer_t>.stride)
-        host_page_size(host_port, &pagesize)
-
-        var vm_stat: vm_statistics = vm_statistics_data_t()
-        withUnsafeMutablePointer(to: &vm_stat) { (vmStatPointer) -> Void in
-            vmStatPointer.withMemoryRebound(to: integer_t.self, capacity: Int(host_size)) {
-                if host_statistics(host_port, HOST_VM_INFO, $0, &host_size) != KERN_SUCCESS {
-                    //                    NSLog("Error: Failed to fetch vm statistics")
-                }
-            }
-        }
-
-        /* Stats in bytes */
-        let mem_used: Int64 = Int64(vm_stat.active_count +
-            vm_stat.inactive_count +
-            vm_stat.wire_count) * Int64(pagesize)
-        let mem_free: Int64 = Int64(vm_stat.free_count) * Int64(pagesize)
-
-        print("打印内存使用量 \(mem_used) --\(mem_free)")
-        return (v, mem_used, mem_free, Float(mem_used) / Float(v))
-    }
-
-    func cpuUsage() -> Float {
-        let CPUUsageLock: NSLock = NSLock()
-        var cpuInfo: processor_info_array_t!
-        var prevCpuInfo: processor_info_array_t?
-        var numCpuInfo: mach_msg_type_number_t = 0
-        var numPrevCpuInfo: mach_msg_type_number_t = 0
-        let numCPUs: uint = 0
-        var numCPUsU: natural_t = 0
-        var totalUsage: Float = 0.0
-        let err: kern_return_t = host_processor_info(mach_host_self(), PROCESSOR_CPU_LOAD_INFO, &numCPUsU, &cpuInfo, &numCpuInfo)
-        if err == KERN_SUCCESS {
-            CPUUsageLock.lock()
-
-            for i in 0 ..< Int32(numCPUs) {
-                var inUse: Int32
-                var total: Int32
-                if let prevCpuInfo = prevCpuInfo {
-                    inUse = cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_USER)]
-                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_USER)]
-                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_SYSTEM)]
-                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_SYSTEM)]
-                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_NICE)]
-                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_NICE)]
-                    total = inUse + (cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_IDLE)]
-                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_IDLE)])
-                } else {
-                    inUse = cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_USER)]
-                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_SYSTEM)]
-                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_NICE)]
-                    total = inUse + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_IDLE)]
-                }
-
-                print(String(format: "Core: %u Usage: %f", i, Float(inUse) / Float(total)))
-                totalUsage = totalUsage + (Float(inUse) / Float(total))
-            }
-            CPUUsageLock.unlock()
-
-            if let prevCpuInfo = prevCpuInfo {
-                // vm_deallocate Swift usage credit rsfinn: https://stackoverflow.com/a/48630296/1033581
-                let prevCpuInfoSize: size_t = MemoryLayout<integer_t>.stride * Int(numPrevCpuInfo)
-                vm_deallocate(mach_task_self_, vm_address_t(bitPattern: prevCpuInfo), vm_size_t(prevCpuInfoSize))
-            }
-
-            prevCpuInfo = cpuInfo
-            numPrevCpuInfo = numCpuInfo
-
-            cpuInfo = nil
-            numCpuInfo = 0
-            return totalUsage
-        } else {
-            print("Error!")
-            return 0.0
-        }
-    }
-}
+//public extension UIDevice {
+//    func ramUsage() -> (UInt64, Int64, Int64, Float) {
+//        let v = ProcessInfo.processInfo.physicalMemory
+//        print("\(v)")
+//
+//        var pagesize: vm_size_t = 0
+//
+//        let host_port: mach_port_t = mach_host_self()
+//        var host_size: mach_msg_type_number_t = mach_msg_type_number_t(MemoryLayout<vm_statistics_data_t>.stride / MemoryLayout<integer_t>.stride)
+//        host_page_size(host_port, &pagesize)
+//
+//        var vm_stat: vm_statistics = vm_statistics_data_t()
+//        withUnsafeMutablePointer(to: &vm_stat) { (vmStatPointer) -> Void in
+//            vmStatPointer.withMemoryRebound(to: integer_t.self, capacity: Int(host_size)) {
+//                if host_statistics(host_port, HOST_VM_INFO, $0, &host_size) != KERN_SUCCESS {
+//                    //                    NSLog("Error: Failed to fetch vm statistics")
+//                }
+//            }
+//        }
+//
+//        /* Stats in bytes */
+//        let mem_used: Int64 = Int64(vm_stat.active_count +
+//            vm_stat.inactive_count +
+//            vm_stat.wire_count) * Int64(pagesize)
+//        let mem_free: Int64 = Int64(vm_stat.free_count) * Int64(pagesize)
+//
+//        print("打印内存使用量 \(mem_used) --\(mem_free)")
+//        return (v, mem_used, mem_free, Float(mem_used) / Float(v))
+//    }
+//
+//    func cpuUsage() -> Float {
+//        let CPUUsageLock: NSLock = NSLock()
+//        var cpuInfo: processor_info_array_t!
+//        var prevCpuInfo: processor_info_array_t?
+//        var numCpuInfo: mach_msg_type_number_t = 0
+//        var numPrevCpuInfo: mach_msg_type_number_t = 0
+//        let numCPUs: uint = 0
+//        var numCPUsU: natural_t = 0
+//        var totalUsage: Float = 0.0
+//        let err: kern_return_t = host_processor_info(mach_host_self(), PROCESSOR_CPU_LOAD_INFO, &numCPUsU, &cpuInfo, &numCpuInfo)
+//        if err == KERN_SUCCESS {
+//            CPUUsageLock.lock()
+//
+//            for i in 0 ..< Int32(numCPUs) {
+//                var inUse: Int32
+//                var total: Int32
+//                if let prevCpuInfo = prevCpuInfo {
+//                    inUse = cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_USER)]
+//                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_USER)]
+//                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_SYSTEM)]
+//                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_SYSTEM)]
+//                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_NICE)]
+//                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_NICE)]
+//                    total = inUse + (cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_IDLE)]
+//                        - prevCpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_IDLE)])
+//                } else {
+//                    inUse = cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_USER)]
+//                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_SYSTEM)]
+//                        + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_NICE)]
+//                    total = inUse + cpuInfo[Int(CPU_STATE_MAX * i + CPU_STATE_IDLE)]
+//                }
+//
+//                print(String(format: "Core: %u Usage: %f", i, Float(inUse) / Float(total)))
+//                totalUsage = totalUsage + (Float(inUse) / Float(total))
+//            }
+//            CPUUsageLock.unlock()
+//
+//            if let prevCpuInfo = prevCpuInfo {
+//                // vm_deallocate Swift usage credit rsfinn: https://stackoverflow.com/a/48630296/1033581
+//                let prevCpuInfoSize: size_t = MemoryLayout<integer_t>.stride * Int(numPrevCpuInfo)
+//                vm_deallocate(mach_task_self_, vm_address_t(bitPattern: prevCpuInfo), vm_size_t(prevCpuInfoSize))
+//            }
+//
+//            prevCpuInfo = cpuInfo
+//            numPrevCpuInfo = numCpuInfo
+//
+//            cpuInfo = nil
+//            numCpuInfo = 0
+//            return totalUsage
+//        } else {
+//            print("Error!")
+//            return 0.0
+//        }
+//    }
+//}
